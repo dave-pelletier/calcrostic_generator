@@ -41,59 +41,59 @@
 
   <!-- Small glue script that calls your module -->
   <py-script>
-from pyscript import Element
-# Import what we need from your module
-from calcrostic_generator import generate_puzzle, _six_lines_from_grid, list_detected_clues
+    from pyscript import Element
+    # Import what we need from your module
+    from calcrostic_generator import generate_puzzle, _six_lines_from_grid, list_detected_clues
 
-def _col_widths_from_letter_grid(letter_grid):
-    return [max(len(letter_grid[r][c]) for r in range(3)) for c in range(3)]
-def _center(s, w): return s.center(w)
+    def _col_widths_from_letter_grid(letter_grid):
+        return [max(len(letter_grid[r][c]) for r in range(3)) for c in range(3)]
+    def _center(s, w): return s.center(w)
 
-def make_student_string(letter_grid, row_ops, col_ops):
-    colw = _col_widths_from_letter_grid(letter_grid)
-    s  = f"{_center(letter_grid[0][0],colw[0])} {row_ops[0]} {_center(letter_grid[0][1],colw[1])} = {_center(letter_grid[0][2],colw[2])}\n"
-    s += f"{_center(col_ops[0],colw[0])}   {_center(col_ops[1],colw[1])}   {_center(col_ops[2],colw[2])}\n"
-    s += f"{_center(letter_grid[1][0],colw[0])} {row_ops[1]} {_center(letter_grid[1][1],colw[1])} = {_center(letter_grid[1][2],colw[2])}\n"
-    s += f"{_center('=',colw[0])}   {_center('=',colw[1])}   {_center('=',colw[2])}\n"
-    s += f"{_center(letter_grid[2][0],colw[0])} {row_ops[2]} {_center(letter_grid[2][1],colw[1])} = {_center(letter_grid[2][2],colw[2])}"
-    return s
+    def make_student_string(letter_grid, row_ops, col_ops):
+        colw = _col_widths_from_letter_grid(letter_grid)
+        s  = f"{_center(letter_grid[0][0],colw[0])} {row_ops[0]} {_center(letter_grid[0][1],colw[1])} = {_center(letter_grid[0][2],colw[2])}\n"
+        s += f"{_center(col_ops[0],colw[0])}   {_center(col_ops[1],colw[1])}   {_center(col_ops[2],colw[2])}\n"
+        s += f"{_center(letter_grid[1][0],colw[0])} {row_ops[1]} {_center(letter_grid[1][1],colw[1])} = {_center(letter_grid[1][2],colw[2])}\n"
+        s += f"{_center('=',colw[0])}   {_center('=',colw[1])}   {_center('=',colw[2])}\n"
+        s += f"{_center(letter_grid[2][0],colw[0])} {row_ops[2]} {_center(letter_grid[2][1],colw[1])} = {_center(letter_grid[2][2],colw[2])}"
+        return s
 
-def make_teacher_string(grid, row_ops, col_ops, letter_grid):
-    colw = _col_widths_from_letter_grid(letter_grid)
-    nums = [[str(grid[r][c]) for c in range(3)] for r in range(3)]
-    s  = f"{_center(nums[0][0],colw[0])} {row_ops[0]} {_center(nums[0][1],colw[1])} = {_center(nums[0][2],colw[2])}\n"
-    s += f"{_center(col_ops[0],colw[0])}   {_center(col_ops[1],colw[1])}   {_center(col_ops[2],colw[2])}\n"
-    s += f"{_center(nums[1][0],colw[0])} {row_ops[1]} {_center(nums[1][1],colw[1])} = {_center(nums[1][2],colw[2])}\n"
-    s += f"{_center('=',colw[0])}   {_center('=',colw[1])}   {_center('=',colw[2])}\n"
-    s += f"{_center(nums[2][0],colw[0])} {row_ops[2]} {_center(nums[2][1],colw[1])} = {_center(nums[2][2],colw[2])}"
-    return s
+    def make_teacher_string(grid, row_ops, col_ops, letter_grid):
+        colw = _col_widths_from_letter_grid(letter_grid)
+        nums = [[str(grid[r][c]) for c in range(3)] for r in range(3)]
+        s  = f"{_center(nums[0][0],colw[0])} {row_ops[0]} {_center(nums[0][1],colw[1])} = {_center(nums[0][2],colw[2])}\n"
+        s += f"{_center(col_ops[0],colw[0])}   {_center(col_ops[1],colw[1])}   {_center(col_ops[2],colw[2])}\n"
+        s += f"{_center(nums[1][0],colw[0])} {row_ops[1]} {_center(nums[1][1],colw[1])} = {_center(nums[1][2],colw[2])}\n"
+        s += f"{_center('=',colw[0])}   {_center('=',colw[1])}   {_center('=',colw[2])}\n"
+        s += f"{_center(nums[2][0],colw[0])} {row_ops[2]} {_center(nums[2][1],colw[1])} = {_center(nums[2][2],colw[2])}"
+        return s
 
-def make_debug_string(grid, row_ops, col_ops):
-    labels = ["Row1","Row2","Row3","Col1","Col2","Col3"]
-    lines  = _six_lines_from_grid(grid, row_ops, col_ops)
-    s = "--- Debug: Six Numeric Equations ---\n"
-    for (a,op,b,res), name in zip(lines, labels):
-        s += f"{name}: {a} {op} {b} = {res}\n"
-    s += "\n--- Debug: Detected Clues ---\n"
-    for m in list_detected_clues(grid, row_ops, col_ops):
-        s += f"- {m}\n"
-    return s
+    def make_debug_string(grid, row_ops, col_ops):
+        labels = ["Row1","Row2","Row3","Col1","Col2","Col3"]
+        lines  = _six_lines_from_grid(grid, row_ops, col_ops)
+        s = "--- Debug: Six Numeric Equations ---\n"
+        for (a,op,b,res), name in zip(lines, labels):
+            s += f"{name}: {a} {op} {b} = {res}\n"
+        s += "\n--- Debug: Detected Clues ---\n"
+        for m in list_detected_clues(grid, row_ops, col_ops):
+            s += f"- {m}\n"
+        return s
 
-def on_generate(evt=None):
-    p = generate_puzzle()
-    if not p:
-        Element("outStudent").write("Failed to generate a puzzle. Try again.")
-        Element("outTeacher").write("")
-        Element("outMap").write("")
-        Element("outDebug").write("")
-        return
-    grid, row_ops, col_ops, letter_grid, letter_to_digit = p
-    Element("outStudent").write(make_student_string(letter_grid, row_ops, col_ops))
-    Element("outTeacher").write(make_teacher_string(grid, row_ops, col_ops, letter_grid))
-    Element("outMap").write(str(letter_to_digit))
-    Element("outDebug").write(make_debug_string(grid, row_ops, col_ops))
+    def on_generate(evt=None):
+        p = generate_puzzle()
+        if not p:
+            Element("outStudent").write("Failed to generate a puzzle. Try again.")
+            Element("outTeacher").write("")
+            Element("outMap").write("")
+            Element("outDebug").write("")
+            return
+        grid, row_ops, col_ops, letter_grid, letter_to_digit = p
+        Element("outStudent").write(make_student_string(letter_grid, row_ops, col_ops))
+        Element("outTeacher").write(make_teacher_string(grid, row_ops, col_ops, letter_grid))
+        Element("outMap").write(str(letter_to_digit))
+        Element("outDebug").write(make_debug_string(grid, row_ops, col_ops))
 
-Element("btnGen").element.addEventListener("click", on_generate)
+    Element("btnGen").element.addEventListener("click", on_generate)
   </py-script>
 </body>
 </html>
