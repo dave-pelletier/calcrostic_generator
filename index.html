@@ -1,0 +1,99 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Calcrostic Generator</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css">
+  <script defer src="https://pyscript.net/latest/pyscript.js"></script>
+  <style>
+    body{font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;max-width:900px;margin:40px auto;padding:0 16px}
+    .row{display:flex;gap:12px;flex-wrap:wrap}
+    .card{border:1px solid #ddd;border-radius:12px;padding:16px}
+    button{padding:.6rem 1rem;border:1px solid #999;border-radius:.6rem;cursor:pointer}
+    pre{white-space:pre-wrap}
+  </style>
+</head>
+<body>
+  <h1>Calcrostic Generator</h1>
+  <div class="row"><button id="btnGen">Generate</button></div>
+
+  <div class="row" style="margin-top:18px">
+    <div class="card" style="flex:1">
+      <h3>Student Puzzle</h3>
+      <pre id="outStudent">Click Generate…</pre>
+    </div>
+    <div class="card" style="flex:1">
+      <h3>Teacher Solution</h3>
+      <pre id="outTeacher"></pre>
+      <h4>Letter → Digit</h4>
+      <pre id="outMap"></pre>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:18px">
+    <h3>Debug</h3>
+    <pre id="outDebug"></pre>
+  </div>
+
+  <!-- Load your Python module first -->
+  <py-script src="calcrostic_generator.py"></py-script>
+
+  <!-- Small glue script that calls your module -->
+  <py-script>
+from pyscript import Element
+# Import what we need from your module
+from calcrostic_generator import generate_puzzle, _six_lines_from_grid, list_detected_clues
+
+def _col_widths_from_letter_grid(letter_grid):
+    return [max(len(letter_grid[r][c]) for r in range(3)) for c in range(3)]
+def _center(s, w): return s.center(w)
+
+def make_student_string(letter_grid, row_ops, col_ops):
+    colw = _col_widths_from_letter_grid(letter_grid)
+    s  = f"{_center(letter_grid[0][0],colw[0])} {row_ops[0]} {_center(letter_grid[0][1],colw[1])} = {_center(letter_grid[0][2],colw[2])}\n"
+    s += f"{_center(col_ops[0],colw[0])}   {_center(col_ops[1],colw[1])}   {_center(col_ops[2],colw[2])}\n"
+    s += f"{_center(letter_grid[1][0],colw[0])} {row_ops[1]} {_center(letter_grid[1][1],colw[1])} = {_center(letter_grid[1][2],colw[2])}\n"
+    s += f"{_center('=',colw[0])}   {_center('=',colw[1])}   {_center('=',colw[2])}\n"
+    s += f"{_center(letter_grid[2][0],colw[0])} {row_ops[2]} {_center(letter_grid[2][1],colw[1])} = {_center(letter_grid[2][2],colw[2])}"
+    return s
+
+def make_teacher_string(grid, row_ops, col_ops, letter_grid):
+    colw = _col_widths_from_letter_grid(letter_grid)
+    nums = [[str(grid[r][c]) for c in range(3)] for r in range(3)]
+    s  = f"{_center(nums[0][0],colw[0])} {row_ops[0]} {_center(nums[0][1],colw[1])} = {_center(nums[0][2],colw[2])}\n"
+    s += f"{_center(col_ops[0],colw[0])}   {_center(col_ops[1],colw[1])}   {_center(col_ops[2],colw[2])}\n"
+    s += f"{_center(nums[1][0],colw[0])} {row_ops[1]} {_center(nums[1][1],colw[1])} = {_center(nums[1][2],colw[2])}\n"
+    s += f"{_center('=',colw[0])}   {_center('=',colw[1])}   {_center('=',colw[2])}\n"
+    s += f"{_center(nums[2][0],colw[0])} {row_ops[2]} {_center(nums[2][1],colw[1])} = {_center(nums[2][2],colw[2])}"
+    return s
+
+def make_debug_string(grid, row_ops, col_ops):
+    labels = ["Row1","Row2","Row3","Col1","Col2","Col3"]
+    lines  = _six_lines_from_grid(grid, row_ops, col_ops)
+    s = "--- Debug: Six Numeric Equations ---\n"
+    for (a,op,b,res), name in zip(lines, labels):
+        s += f"{name}: {a} {op} {b} = {res}\n"
+    s += "\n--- Debug: Detected Clues ---\n"
+    for m in list_detected_clues(grid, row_ops, col_ops):
+        s += f"- {m}\n"
+    return s
+
+def on_generate(evt=None):
+    p = generate_puzzle()
+    if not p:
+        Element("outStudent").write("Failed to generate a puzzle. Try again.")
+        Element("outTeacher").write("")
+        Element("outMap").write("")
+        Element("outDebug").write("")
+        return
+    grid, row_ops, col_ops, letter_grid, letter_to_digit = p
+    Element("outStudent").write(make_student_string(letter_grid, row_ops, col_ops))
+    Element("outTeacher").write(make_teacher_string(grid, row_ops, col_ops, letter_grid))
+    Element("outMap").write(str(letter_to_digit))
+    Element("outDebug").write(make_debug_string(grid, row_ops, col_ops))
+
+Element("btnGen").element.addEventListener("click", on_generate)
+  </py-script>
+</body>
+</html>
