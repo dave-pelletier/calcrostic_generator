@@ -6,8 +6,8 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
 
   <!-- PyScript -->
-  <link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css">
-  <script defer src="https://pyscript.net/latest/pyscript.js"></script>
+  <link rel="stylesheet" href="https://pyscript.net/2024.6.1/pyscript.css">
+  <script defer src="https://pyscript.net/2024.6.1/pyscript.js"></script>
 
   <!-- Tell PyScript to fetch your local module so "import calcrostic_generator" works -->
   <py-config>
@@ -46,10 +46,12 @@
     <pre id="outDebug"></pre>
   </div>
 
-  <!-- Small glue script that calls your module -->
-  <py-script>
+  <script type="py" src="calcrostic_generator.py"></script>
+
+  <button id="btnGen" pys-onClick="on_generate">Generate</button>
+
+  <script type="py">
     from pyscript import Element
-    # Import what we need from your module
     from calcrostic_generator import generate_puzzle, _six_lines_from_grid, list_detected_clues
 
     def _col_widths_from_letter_grid(letter_grid):
@@ -99,8 +101,6 @@
         Element("outTeacher").write(make_teacher_string(grid, row_ops, col_ops, letter_grid))
         Element("outMap").write(str(letter_to_digit))
         Element("outDebug").write(make_debug_string(grid, row_ops, col_ops))
-
-    Element("btnGen").element.addEventListener("click", on_generate)
-  </py-script>
+    </script>
 </body>
 </html>
