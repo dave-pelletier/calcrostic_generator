@@ -495,11 +495,11 @@ def generate_puzzle(
 
     return None
 
-p = generate_puzzle()
-if not p:
-    print("Failed to generate a puzzle.")
-else:
-    grid, row_ops, col_ops, letter_grid, letter_to_digit = p
-    widths = print_student(letter_grid, row_ops, col_ops)
-    print_teacher(grid, row_ops, col_ops, widths, letter_to_digit)
-    debug_verify(grid, row_ops, col_ops)
+#p = generate_puzzle()
+#if not p:
+#    print("Failed to generate a puzzle.")
+#else:
+#    grid, row_ops, col_ops, letter_grid, letter_to_digit = p
+#    widths = print_student(letter_grid, row_ops, col_ops)
+#    print_teacher(grid, row_ops, col_ops, widths, letter_to_digit)
+#    debug_verify(grid, row_ops, col_ops)
