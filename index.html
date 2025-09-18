@@ -4,8 +4,17 @@
   <meta charset="utf-8" />
   <title>Calcrostic Generator</title>
   <meta name="viewport" content="width=device-width,initial-scale=1" />
+
+  <!-- PyScript -->
   <link rel="stylesheet" href="https://pyscript.net/latest/pyscript.css">
   <script defer src="https://pyscript.net/latest/pyscript.js"></script>
+
+  <!-- Tell PyScript to fetch your local module so "import calcrostic_generator" works -->
+  <py-config>
+    [[fetch]]
+    files = ["./calcrostic_generator.py"]
+  </py-config>
+
   <style>
     body{font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial,sans-serif;max-width:900px;margin:40px auto;padding:0 16px}
     .row{display:flex;gap:12px;flex-wrap:wrap}
@@ -14,6 +23,7 @@
     pre{white-space:pre-wrap}
   </style>
 </head>
+
 <body>
   <h1>Calcrostic Generator</h1>
   <div class="row"><button id="btnGen">Generate</button></div>
@@ -35,9 +45,6 @@
     <h3>Debug</h3>
     <pre id="outDebug"></pre>
   </div>
-
-  <!-- Load your Python module first -->
-  <py-script src="calcrostic_generator.py"></py-script>
 
   <!-- Small glue script that calls your module -->
   <py-script>
