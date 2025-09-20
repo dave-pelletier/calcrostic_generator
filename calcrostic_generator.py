@@ -4,17 +4,17 @@ from typing import List, Tuple, Optional, Dict
 # =========================
 # Configuration (edit here)
 # =========================
-ALLOW_TWO_DIGIT   = True   # True: cells evaluate to 0..99 (via concatenation); False: 0/1..9 (see ALLOW_ZERO)
-ALLOW_ZERO        = True   # allow digit '0' and numeric value 0 (never divide by 0)
-CLUE_SCORE_TARGET = 2      # per your request, lowered in all cases
+_ALLOW_TWO_DIGIT   = True   # True: cells evaluate to 0..99 (via concatenation); False: 0/1..9 (see ALLOW_ZERO)
+_ALLOW_ZERO        = True   # allow digit '0' and numeric value 0 (never divide by 0)
+_CLUE_SCORE_TARGET = 0      # per your request, lowered in all cases
 
 # How many distinct letters (i.e., distinct digit-characters) must appear?
-LETTERS_MIN = 4   # set equal to LETTERS_MAX if you want an exact count
-LETTERS_MAX = 6   # upper bound cannot exceed 10 if ALLOW_ZERO=True (digits 0-9)
+_LETTERS_MIN = 5   # set equal to LETTERS_MAX if you want an exact count
+_LETTERS_MAX = 6   # upper bound cannot exceed 10 if ALLOW_ZERO=True (digits 0-9)
 
 # Operators; equal chance by default
-OPS = ["+", "-", "x", "/"]
-OP_WEIGHTS = None  # or dict like {"+":1, "-":1, "x":1, "/":1}
+_OPS = ["+", "-", "x", "/"]
+_OP_WEIGHTS = None  # or dict like {"+":1, "-":1, "x":1, "/":1}
 
 # =========================
 # Helpers / Guardrails
@@ -430,10 +430,12 @@ def debug_verify(grid: List[List[int]], row_ops: List[str], col_ops: List[str]) 
 # End-to-end generator with all checks
 # =========================
 def generate_puzzle(
-    allow_two_digit: bool = ALLOW_TWO_DIGIT,
-    allow_zero: bool = ALLOW_ZERO,
-    op_weights: dict = OP_WEIGHTS,
-    min_clue_score: int = CLUE_SCORE_TARGET,
+    allow_two_digit: bool = _ALLOW_TWO_DIGIT,
+    allow_zero: bool = _ALLOW_ZERO,
+    letters_min: int = _LETTERS_MIN,
+    letters_max: int = _LETTERS_MAX,
+    op_weights: dict = _OP_WEIGHTS,
+    min_clue_score: int = _CLUE_SCORE_TARGET,
     max_attempts: int = 20000
 ):
     for _ in range(max_attempts):
@@ -444,7 +446,7 @@ def generate_puzzle(
         # 1) Enforce letter-count range (distinct digit-characters across all 9 cells)
         digit_chars = _digit_chars_in_grid(grid)
         k = len(digit_chars)
-        if not (LETTERS_MIN <= k <= LETTERS_MAX):
+        if not (letters_min <= k <= letters_max):
             continue
 
         # 2) Reject mirrored ops (duplicate facts)
@@ -452,8 +454,8 @@ def generate_puzzle(
             continue
 
         # 3) Clue gating
-        if clue_score(grid, row_ops, col_ops) < min_clue_score:
-            continue
+        #if clue_score(grid, row_ops, col_ops) < min_clue_score:
+        #    continue
 
         # 4) Build letter version
         letter_grid, letter_to_digit = digits_to_letters_grid(grid)

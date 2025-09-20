@@ -11,27 +11,25 @@ app = FastAPI()
 def generate(
     allow_zero: bool = Query(True),
     allow_two_digit: bool = Query(True),
-    letters_min: int = Query(6, ge=1, le=10),
-    letters_max: int = Query(9, ge=1, le=10),
-    w_plus:  int = Query(5, ge=1, le=10),
-    w_minus: int = Query(5, ge=1, le=10),
-    w_times: int = Query(5, ge=1, le=10),
-    w_div:   int = Query(5, ge=1, le=10),
+    letters_min: int = Query(5, ge=1, le=10),
+    letters_max: int = Query(6, ge=1, le=10),
+    w_plus:  int = Query(2, ge=0, le=4),
+    w_minus: int = Query(2, ge=0, le=4),
+    w_times: int = Query(2, ge=0, le=4),
+    w_div:   int = Query(2, ge=0, le=4),
     min_clue_score: int = Query(None),
 ):
-    cg.ALLOW_ZERO = allow_zero
-    cg.ALLOW_TWO_DIGIT = allow_two_digit
-    cg.LETTERS_MIN = letters_min
-    cg.LETTERS_MAX = letters_max
-    cg.OP_WEIGHTS = { "+": w_plus, "-": w_minus, "x": w_times, "/": w_div }
-    
+    op_weights = { "+": w_plus, "-": w_minus, "x": w_times, "/": w_div }
+
     if min_clue_score is not None:
         cg.CLUE_SCORE_TARGET = min_clue_score
 
     puzzle = cg.generate_puzzle(
-        allow_two_digit=cg.ALLOW_TWO_DIGIT,
-        allow_zero=cg.ALLOW_ZERO,
-        min_clue_score=cg.CLUE_SCORE_TARGET,
+        allow_two_digit = allow_two_digit,
+        allow_zero = allow_zero,
+        letters_min = letters_min,
+        letters_max = letters_max,
+        op_weights = op_weights,
     )
     if not puzzle:
         raise HTTPException(status_code=503, detail="Failed to generate a puzzle with the current settings.")

@@ -1,127 +1,156 @@
+/* =========================================================
+   Calcrostic Generator – Kid-Friendly Theme (Light + Dark)
+   ========================================================= */
+
+/* Let native inputs adapt to dark mode automatically */
+:root { color-scheme: light dark; }
+
+/* ---------------------------
+   Base (Light Mode Defaults)
+   --------------------------- */
+:root {
+  /* Fun light palette */
+  --bg:            #ffffff;
+  --text:          #24324a;   /* deep blue-gray */
+  --muted:         #6c7a91;   /* soft slate */
+  --card:          #f8fafc;   /* very light slate */
+  --card-border:   #e6eaf0;
+  --chip:          #ffffff;
+
+  /* Action / accents */
+  --accent:        #3b82f6;   /* playful blue */
+  --accent-hover:  #2563eb;   /* deeper blue */
+  --accent-2:      #f97316;   /* carrot orange */
+  --good:          #10b981;   /* green */
+  --warn:          #f59e0b;   /* amber */
+
+  /* Code / pre backgrounds */
+  --pre-bg:        #ffffff;
+  --pre-border:    #e5e7eb;
+
+  /* Range sliders */
+  --track:         #e5e7eb;
+  --thumb:         var(--accent);
+
+  /* Config row background */
+  --row-bg:        #ffffff;
+
+  /* Button text color (uses currentColor for spinner) */
+  --btn-text:      #ffffff;
+}
+
+/* ---------------
+   Dark Mode Vars
+   --------------- */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg:           #0f1117;  /* near black with blue hint */
+    --text:         #e5e7eb;  /* bright slate */
+    --muted:        #9aa4b2;  /* muted gray-blue */
+    --card:         #141a22;  /* panel background */
+    --card-border:  #293240;  /* subtle outline */
+    --chip:         #0b0f14;
+
+    --accent:       #60a5fa;  /* lighter blue for contrast */
+    --accent-hover: #3b82f6;
+    --accent-2:     #fb923c;  /* warm orange glow */
+    --good:         #34d399;
+    --warn:         #fbbf24;
+
+    --pre-bg:       #0b0f14;
+    --pre-border:   #293240;
+
+    --track:        #1f2632;
+    --thumb:        var(--accent);
+
+    --row-bg:       #0f141b;
+
+    --btn-text:     #ffffff;
+  }
+}
+
+/* -----------
+   Typography
+   ----------- */
+@font-face {
+  font-family: "Fredoka";
+  src: local("Fredoka"), local("Fredoka-Regular");
+  font-display: swap;
+}
+
 body {
-  font-family: "Comic Sans MS", "Fredoka", sans-serif;
+  font-family: "Comic Sans MS", "Fredoka", system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
   text-align: center;
-  background: #333;
-  color: #fff;
   padding: 1rem;
+  margin: 0;
 }
 
 h1 {
   font-size: 2rem;
-  color: #6a94be;
+  margin: 0 0 0.75rem;
+  color: var(--text);
 }
 
-button {
-  padding: 0.5rem 1rem;
-  font-size: 1.2rem;
-  margin-top: 1rem;
-  border-radius: 8px;
-  border: none;
-  background: #6a94be;
-  color: #fff;
-  cursor: pointer;
-  position:relative;
-}
-button:hover {
-  background: #2980b9;
-}
-button[disabled] {
-  opacity: 0.7;
-  cursor: progress;
+h2, h3 {
+  color: var(--text);
+  margin: 0.5rem 0;
 }
 
-.spinner {
-  display: none;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 22px;
-  height: 22px;
-  border: 3px solid currentColor;   /* use button text color */
-  border-right-color: transparent;   /* makes the “gap” */
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-  animation: spin 0.8s linear infinite;
-}
-
-@keyframes spin { to { transform: translate(-50%, -50%) rotate(360deg); } }
-
-.loading .spinner { display: block; }
-.loading .btn-label { opacity: 0; }
-
-
-section.config {
-  margin: 1rem auto;
-  padding: 1rem;
-  border: 2px solid #eee;
-  border-radius: 12px;
-  max-width: 600px;
-}
-
-section.credit {
-  margin: 1rem auto;
-  padding: 1rem;
-  border: 2px solid #eee;
-  border-radius: 12px;
-  max-width: 600px;
-}
-
+/* ---- Cards / Panels ---- */
 .output {
-  margin-top: 2rem;
-  text-align: left;
-  max-width: 700px;
-  margin-left: auto;
-  margin-right: auto;
-  background: #555;
-  padding: 1rem;
-  border-radius: 12px;
-  border: 1px solid #ddd;
-}
-
-.hidden {
-  display: none;
-}
-
-pre {
-  background: #555;
-  padding: 0.5rem;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  white-space: pre-wrap;
-  text-align: left;
-}
-
-/* Configuration panel layout */
-#configPanel {
-  text-align: left;              /* left-align contents in the card */
-}
-
-/* Make the summary (triangle) larger and easy to tap */
-#configPanel summary {
+  margin: 1.25rem auto 0;
+  font-size: 1.8rem;
+  line-height: 2.2rem;
+  text-align: center;
   font-weight: 700;
+  letter-spacing: 1px;
+  max-width: 760px;
+  background: var(--card);
+  padding: 1.2rem;
+  border-radius: 14px;
+  border: 1px solid var(--card-border);
+  box-shadow:
+    0 1px 0 rgba(0,0,0,0.02),
+    0 6px 10px rgba(0,0,0,0.04);
+}
+
+.hidden { display: none; }
+
+/* ---- Collapsible Configuration Panel ---- */
+#configPanel { text-align: left; }
+
+#configPanel summary {
+  font-weight: 800;
   font-size: 1.05rem;
   cursor: pointer;
-  list-style: none;              /* remove default marker */
+  list-style: none;
   position: relative;
   padding-left: 1.2rem;
-  margin-bottom: 0.5rem;
+  color: var(--text);
+  margin-bottom: 0.35rem;
 }
+
 #configPanel summary::before {
   content: "▶";
   position: absolute;
   left: 0;
   top: 0;
   transform: translateY(2px);
-  transition: transform 0.15s ease;
-}
-#configPanel details[open] summary::before {
-  transform: translateY(2px) rotate(90deg);
+  color: var(--muted);
+  transition: transform 0.15s ease, color 0.15s ease;
 }
 
-/* Neat one-line list, labels left, inputs right */
+#configPanel details[open] summary::before {
+  transform: translateY(2px) rotate(90deg);
+  color: var(--accent-2);
+}
+
+/* ---- Config List Rows ---- */
 .config-list {
   display: grid;
-  grid-template-columns: 1fr;    /* single column list */
+  grid-template-columns: 1fr;  /* neat single column */
   gap: 10px;
   margin-top: 8px;
 }
@@ -132,28 +161,141 @@ pre {
   justify-content: space-between;  /* label left, control right */
   gap: 12px;
   width: 100%;
-  padding: 6px 8px;
-  background: #555;
-  border: 1px solid #e6e6e6;
-  border-radius: 8px;
+  padding: 10px 12px;
+  background: var(--row-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 10px;
 }
 
-.config-label {
-  font-weight: 500;
-}
+.config-label { font-weight: 600; color: var(--text); }
 
-/* Make number inputs compact and aligned */
+/* ---- Numeric Inputs ---- */
 .config-number {
-  width: 4.5rem;
+  width: 5rem;
+  appearance: textfield;
+  padding: 6px 8px;
+  border: 1px solid var(--card-border);
+  border-radius: 8px;
+  background: var(--chip);
+  color: var(--text);
+}
+.config-number:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
 }
 
-/* Optional: give the button some breathing room below the config panel */
-#generateBtn {
-  margin-top: 12px;
+/* Remove spinners in some browsers */
+.config-number::-webkit-outer-spin-button,
+.config-number::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 
+/* ---- Range (Operator Weights) ---- */
 .config-item input[type="range"] {
-  background: #fff;
-  color: #2980b9;
-  width: 200px;
+  width: clamp(140px, 50%, 260px);
+  max-width: 60%;
+  height: 8px;
+  appearance: none;
+  background: var(--track);
+  border-radius: 999px;
+  outline: none;
+}
+.config-item input[type="range"]::-webkit-slider-thumb {
+  appearance: none;
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: var(--thumb);
+  border: 2px solid #ffffff20;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+  cursor: pointer;
+}
+.config-item input[type="range"]::-moz-range-thumb {
+  width: 18px; height: 18px;
+  border-radius: 50%;
+  background: var(--thumb);
+  border: none;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+  cursor: pointer;
+}
+
+/* ---- Button + Centered Spinner ---- */
+button {
+  appearance: none;
+  border: none;
+  border-radius: 12px;
+  padding: 0.7rem 1.2rem;
+  font-weight: 800;
+  font-size: 1.05rem;
+  background: var(--accent);
+  color: var(--btn-text);
+  cursor: pointer;
+  margin-top: 12px;
+  position: relative;           /* anchor spinner */
+  min-width: 240px;
+  box-shadow: 0 3px 0 rgba(0,0,0,0.08), 0 8px 18px rgba(59,130,246,0.25);
+  transition: transform 0.04s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+button:hover { background: var(--accent-hover); }
+button:active { transform: translateY(1px); }
+button[disabled] { opacity: 0.8; cursor: progress; }
+
+.spinner {
+  display: none;
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 22px; height: 22px;
+  border: 3px solid currentColor;  /* inherits button text color */
+  border-right-color: transparent;  /* gap for spin illusion */
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: translate(-50%, -50%) rotate(360deg); } }
+
+.loading .spinner { display: block; }
+.loading .btn-label { opacity: 0; }
+
+.config-item { min-width: 0; }
+.config-label { flex: 1 1 auto; min-width: 0; }
+.config-item > input[type="range"],
+.config-item > input[type="number"],
+.config-item > input[type="checkbox"] { flex: 0 0 auto; }
+
+/* ---- Code / Output Blocks ---- */
+pre {
+  background: var(--pre-bg);
+  color: var(--text);
+  border: 1px solid var(--pre-border);
+  border-radius: 10px;
+  padding: 0.75rem;
+  white-space: pre-wrap;
+  overflow-x: auto;
+  line-height: 1.35;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+}
+
+/* ---- Links (if used) ---- */
+a { color: var(--accent); text-decoration: none; }
+a:hover { color: var(--accent-hover); text-decoration: underline; }
+
+/* ---- Utility ---- */
+.center { text-align: center; }
+.left   { text-align: left; }
+.right  { text-align: right; }
+
+/* ---- Small decorative badges (if needed) ---- */
+.badge {
+  display: inline-block;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.8rem;
+  border-radius: 999px;
+  background: var(--accent-2);
+  color: #fff;
+}
+
+/* ---- Optional: subtle dividers inside cards ---- */
+details {
+  border-top: 1px solid var(--card-border);
+  padding-top: 6px;
 }
