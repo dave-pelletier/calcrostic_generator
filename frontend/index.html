@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calcrostics</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <h1>Calcrostic<sup>©</sup> Puzzle Generator</h1>
+  <h2>Adam Beck Mathletes</h2>
+
+  <section class="config">
+    <h2>Configuration</h2>
+    <label><input type="checkbox" id="allowZero" checked> Allow Zero</label>
+    <label><input type="checkbox" id="allowTwoDigit" checked> Allow Two-Digit Numbers</label>
+    <label><input type="checkbox" id="allowDivision" checked> Allow Division</label>
+    <br>
+    <label>Letters Min <input type="number" id="lettersMin" value="6" min="1" max="10"></label>
+    <label>Letters Max <input type="number" id="lettersMax" value="9" min="1" max="10"></label>
+    <br>
+    <button id="generateBtn">Generate Puzzle!</button>
+  </section>
+
+  <section id="output" class="output hidden">
+    <h2>🧩 Puzzle</h2>
+    <pre id="puzzle"></pre>
+
+    <details>
+      <summary>✅ Solution</summary>
+      <pre id="solution"></pre>
+      <pre id="mapping"></pre>
+    </details>
+
+    <!--
+    <details>
+      <summary>🔍 Debug</summary>
+      <pre id="debug"></pre>
+    </details>
+    -->
+  </section>
+
+  <section id="credit">
+    <p>Calcrostic<sup>©</sup> Puzzles were created by the <a href="https://cariboutests.com/">Caribou Contests</a> team. You can learn more on their <a href="https://cariboutests.com/games/calcrostic.php">Interactive Calcrostic<sup>©</sup> Puzzle page</a>.</p>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+</html>

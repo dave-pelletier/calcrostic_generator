@@ -1,25 +1,3 @@
-"""
-Calcrostic 3x3 generator with:
-- Kid-friendly guardrails (no negatives, exact division only, bounded results)
-- Optional zero and division support, optional two-digit cells (via concatenated letters)
-- Clue scoring to ensure footholds
-- "No mirrored ops" rejection (prevents duplicate facts like x+y=z and z−x=y together)
-- Uniqueness: accepts only puzzles with exactly one solution (count_solutions limit=2)
-- Student/Teacher aligned printers
-- Debug verifier that lists all 6 numeric equations + detected clues
-
-Usage (example):
-    if __name__ == "__main__":
-        p = generate_puzzle()
-        if not p:
-            print("Failed to generate a puzzle.")
-        else:
-            grid, row_ops, col_ops, letter_grid, letter_to_digit = p
-            widths = print_student(letter_grid, row_ops, col_ops)
-            print_teacher(grid, row_ops, col_ops, widths, letter_to_digit)
-            debug_verify(grid, row_ops, col_ops)
-"""
-
 import random
 from typing import List, Tuple, Optional, Dict
 
@@ -278,7 +256,7 @@ def list_detected_clues(grid: List[List[int]], row_ops: List[str], col_ops: List
 
 
 # =========================
-# Letter mapping (digits → a,b,c,...) & student grid
+# Letter mapping (digits → a,b,c,...) & puzzle grid
 # =========================
 def digits_to_letters_grid(grid: List[List[int]]) -> Tuple[List[List[str]], Dict[str,int]]:
     """
@@ -300,7 +278,7 @@ def digits_to_letters_grid(grid: List[List[int]]) -> Tuple[List[List[str]], Dict
         ["".join(char_to_letter[ch] for ch in str(grid[r][c])) for c in range(3)]
         for r in range(3)
     ]
-    # Teacher mapping: letter -> digit
+    # Solution mapping: letter -> digit
     letter_to_digit = {letters[i]: int(seen_digits[i]) for i in range(len(seen_digits))}
     return letter_grid, letter_to_digit
 
@@ -313,25 +291,25 @@ def _col_widths_from_letter_grid(letter_grid: List[List[str]]) -> List[int]:
 def _center(s: str, w: int) -> str:
     return s.center(w)
 
-def print_student(letter_grid: List[List[str]], row_ops: List[str], col_ops: List[str]):
+def print_puzzle(letter_grid: List[List[str]], row_ops: List[str], col_ops: List[str]):
     colw = _col_widths_from_letter_grid(letter_grid)
     line1 = f"{_center(letter_grid[0][0],colw[0])} {row_ops[0]} {_center(letter_grid[0][1],colw[1])} = {_center(letter_grid[0][2],colw[2])}"
     opsrow = f"{_center(col_ops[0],colw[0])}   {_center(col_ops[1],colw[1])}   {_center(col_ops[2],colw[2])}"
     line2 = f"{_center(letter_grid[1][0],colw[0])} {row_ops[1]} {_center(letter_grid[1][1],colw[1])} = {_center(letter_grid[1][2],colw[2])}"
     seprow = f"{_center('=',colw[0])}   {_center('=',colw[1])}   {_center('=',colw[2])}"
     line3 = f"{_center(letter_grid[2][0],colw[0])} {row_ops[2]} {_center(letter_grid[2][1],colw[1])} = {_center(letter_grid[2][2],colw[2])}"
-    print("\n--- Student Puzzle ---\n")
+    print("\n--- Puzzle ---\n")
     print(line1); print(opsrow); print(line2); print(seprow); print(line3)
-    return colw  # for teacher alignment
+    return colw  # for solution alignment
 
-def print_teacher(numeric_grid: List[List[int]], row_ops: List[str], col_ops: List[str], colw: List[int], letter_to_digit: Dict[str,int]):
+def print_solution(numeric_grid: List[List[int]], row_ops: List[str], col_ops: List[str], colw: List[int], letter_to_digit: Dict[str,int]):
     nums = [[str(numeric_grid[r][c]) for c in range(3)] for r in range(3)]
     line1 = f"{_center(nums[0][0],colw[0])} {row_ops[0]} {_center(nums[0][1],colw[1])} = {_center(nums[0][2],colw[2])}"
     opsrow = f"{_center(col_ops[0],colw[0])}   {_center(col_ops[1],colw[1])}   {_center(col_ops[2],colw[2])}"
     line2 = f"{_center(nums[1][0],colw[0])} {row_ops[1]} {_center(nums[1][1],colw[1])} = {_center(nums[1][2],colw[2])}"
     seprow = f"{_center('=',colw[0])}   {_center('=',colw[1])}   {_center('=',colw[2])}"
     line3 = f"{_center(nums[2][0],colw[0])} {row_ops[2]} {_center(nums[2][1],colw[1])} = {_center(nums[2][2],colw[2])}"
-    print("\n--- Teacher Solution ---\n")
+    print("\n--- Solution ---\n")
     print(line1); print(opsrow); print(line2); print(seprow); print(line3)
     print("\nLetter -> Digit mapping:", letter_to_digit)
 
@@ -440,6 +418,7 @@ def debug_verify(grid: List[List[int]], row_ops: List[str], col_ops: List[str]) 
     print("\n--- Debug: Six Numeric Equations ---")
     for (a,op,b,res), name in zip(lines, labels):
         print(f"{name:>4}: {a} {op} {b} = {res}")
+
     print("\n--- Debug: Detected Clues ---")
     clues = list_detected_clues(grid, row_ops, col_ops)
     if not clues:
@@ -494,12 +473,3 @@ def generate_puzzle(
         return grid, row_ops, col_ops, letter_grid, letter_to_digit
 
     return None
-
-#p = generate_puzzle()
-#if not p:
-#    print("Failed to generate a puzzle.")
-#else:
-#    grid, row_ops, col_ops, letter_grid, letter_to_digit = p
-#    widths = print_student(letter_grid, row_ops, col_ops)
-#    print_teacher(grid, row_ops, col_ops, widths, letter_to_digit)
-#    debug_verify(grid, row_ops, col_ops)
