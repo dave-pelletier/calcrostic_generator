@@ -6,7 +6,6 @@ from typing import List, Tuple, Optional, Dict
 # =========================
 ALLOW_TWO_DIGIT   = True   # True: cells evaluate to 0..99 (via concatenation); False: 0/1..9 (see ALLOW_ZERO)
 ALLOW_ZERO        = True   # allow digit '0' and numeric value 0 (never divide by 0)
-ALLOW_DIVISION    = True   # allow "/" (exact division only, integer, non-negative)
 CLUE_SCORE_TARGET = 2      # per your request, lowered in all cases
 
 # How many distinct letters (i.e., distinct digit-characters) must appear?
@@ -14,18 +13,18 @@ LETTERS_MIN = 4   # set equal to LETTERS_MAX if you want an exact count
 LETTERS_MAX = 6   # upper bound cannot exceed 10 if ALLOW_ZERO=True (digits 0-9)
 
 # Operators; equal chance by default
-OPS = ["+", "-", "x", "/"] if ALLOW_DIVISION else ["+", "-", "x"]
+OPS = ["+", "-", "x", "/"]
 OP_WEIGHTS = None  # or dict like {"+":1, "-":1, "x":1, "/":1}
 
 # =========================
 # Helpers / Guardrails
 # =========================
-def pick_op() -> str:
-    if not OP_WEIGHTS:
+def pick_op(op_weights: dict) -> str:
+    if not op_weights:
         return random.choice(OPS)
     bag = []
     for op in OPS:
-        w = int(OP_WEIGHTS.get(op, 0))
+        w = int(op_weights.get(op, 0))
         bag.extend([op] * max(0, w))
     return random.choice(bag) if bag else random.choice(OPS)
 
@@ -82,13 +81,13 @@ def _has_trivial_zero_identities(grid, row_ops, col_ops) -> bool:
 def generate_grid(
     allow_two_digit: bool = ALLOW_TWO_DIGIT,
     allow_zero: bool = ALLOW_ZERO,
-    allow_division: bool = ALLOW_DIVISION,
+    op_weights: dict = OP_WEIGHTS,
     max_trials: int = 50000,
 ) -> Tuple[Optional[List[List[int]]], Optional[List[str]], Optional[List[str]]]:
     """Generate a consistent 3x3 numeric grid that satisfies all row & column equations."""
     for _ in range(max_trials):
-        row_ops = [pick_op() for _ in range(3)]
-        col_ops = [pick_op() for _ in range(3)]
+        row_ops = [pick_op(op_weights) for _ in range(3)]
+        col_ops = [pick_op(op_weights) for _ in range(3)]
 
         a = sample_value(allow_two_digit, allow_zero)
         b = sample_value(allow_two_digit, allow_zero)
@@ -197,15 +196,15 @@ def clue_score(grid: List[List[int]], row_ops: List[str], col_ops: List[str]) ->
             found = True
 
         # 4) ÷1 identity
-        elif ALLOW_DIVISION and op == "/" and b == 1 and res == a:
+        elif op == "/" and b == 1 and res == a:
             found = True
 
         # 5) a ÷ a = 1  (a != 0 already enforced by exact division rule)
-        elif ALLOW_DIVISION and op == "/" and a == b and b != 0 and res == 1:
+        elif op == "/" and a == b and b != 0 and res == 1:
             found = True
 
         # 6) Restrictive divisibility ONLY (exclude b==1 and a==b)
-        elif ALLOW_DIVISION and op == "/" and b not in (0, 1) and a != b and a % b == 0:
+        elif op == "/" and b not in (0, 1) and a != b and a % b == 0:
             found = True
 
         # 7) Single-digit product
@@ -237,12 +236,12 @@ def list_detected_clues(grid: List[List[int]], row_ops: List[str], col_ops: List
             msg = f"{name}: annihilator (×0→0)"
         elif ALLOW_ZERO and op == "-" and a == b and res == 0:
             msg = f"{name}: a−a=0"
-        elif ALLOW_DIVISION and op == "/" and b == 1 and res == a:
+        elif op == "/" and b == 1 and res == a:
             msg = f"{name}: ÷1 identity"
-        elif ALLOW_DIVISION and op == "/" and a == b and b != 0 and res == 1:
+        elif op == "/" and a == b and b != 0 and res == 1:
             msg = f"{name}: a÷a=1"
         # Restrictive divisibility ONLY (exclude b==1 and a==b)
-        elif ALLOW_DIVISION and op == "/" and b not in (0, 1) and a != b and a % b == 0:
+        elif op == "/" and b not in (0, 1) and a != b and a % b == 0:
             msg = f"{name}: divisibility"
         elif op == "x" and 0 <= res <= 9:
             msg = f"{name}: single-digit product"
@@ -342,7 +341,7 @@ def _compute_checked(a: Optional[int], op: str, b: Optional[int],
     return res
 
 def count_solutions(letter_grid, row_ops, col_ops, *,
-                    allow_zero: bool, allow_two_digit: bool, allow_division: bool,
+                    allow_zero: bool, allow_two_digit: bool,
                     limit: int = 2) -> int:
     """
     Count distinct digit assignments to letters (digits distinct), honoring rules.
@@ -433,12 +432,12 @@ def debug_verify(grid: List[List[int]], row_ops: List[str], col_ops: List[str]) 
 def generate_puzzle(
     allow_two_digit: bool = ALLOW_TWO_DIGIT,
     allow_zero: bool = ALLOW_ZERO,
-    allow_division: bool = ALLOW_DIVISION,
+    op_weights: dict = OP_WEIGHTS,
     min_clue_score: int = CLUE_SCORE_TARGET,
     max_attempts: int = 20000
 ):
     for _ in range(max_attempts):
-        grid, row_ops, col_ops = generate_grid(allow_two_digit, allow_zero, allow_division, max_trials=2000)
+        grid, row_ops, col_ops = generate_grid(allow_two_digit, allow_zero, max_trials=2000)
         if not grid:
             continue
 
@@ -464,7 +463,6 @@ def generate_puzzle(
             letter_grid, row_ops, col_ops,
             allow_zero=allow_zero,
             allow_two_digit=allow_two_digit,
-            allow_division=allow_division,
             limit=2
         )
         if num_solutions != 1:

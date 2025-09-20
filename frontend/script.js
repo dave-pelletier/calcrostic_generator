@@ -1,18 +1,28 @@
 document.getElementById("generateBtn").addEventListener("click", generatePuzzle);
 
 async function generatePuzzle() {
-  const allowZero = document.getElementById("allowZero").checked;
+  const btn = document.getElementById("generateBtn");
+  setLoading(true);
+
+  const allowZero     = document.getElementById("allowZero").checked;
   const allowTwoDigit = document.getElementById("allowTwoDigit").checked;
-  const allowDivision = document.getElementById("allowDivision").checked;
-  const lettersMin = document.getElementById("lettersMin").value;
-  const lettersMax = document.getElementById("lettersMax").value;
+  const lettersMin    = document.getElementById("lettersMin").value;
+  const lettersMax    = document.getElementById("lettersMax").value;
+
+  const wPlus  = document.getElementById("wPlus").value;
+  const wMinus = document.getElementById("wMinus").value;
+  const wTimes = document.getElementById("wTimes").value;
+  const wDiv   = document.getElementById("wDiv").value;
 
   const params = new URLSearchParams({
     allow_zero: allowZero,
     allow_two_digit: allowTwoDigit,
-    allow_division: allowDivision,
     letters_min: lettersMin,
     letters_max: lettersMax,
+    w_plus:  wPlus,
+    w_minus: wMinus,
+    w_times: wTimes,
+    w_div:   wDiv,
   });
 
   try {
@@ -22,17 +32,32 @@ async function generatePuzzle() {
       throw new Error(`${res.status} ${res.statusText}: ${errText}`);
     }
     const text = await res.text();
-
     const { puzzle, solution, mapping } = splitSectionsAndMapping(text);
 
     document.getElementById("output").classList.remove("hidden");
-    document.getElementById("puzzle").textContent = puzzle || "(no puzzle section found)";
+    document.getElementById("puzzle").textContent = puzzle   || "(no puzzle section found)";
     document.getElementById("solution").textContent = solution || "(no solution section found)";
-    document.getElementById("mapping").textContent = mapping || "(no mapping found)";
+    document.getElementById("mapping").textContent = mapping  || "(no mapping found)";
   } catch (err) {
     alert("Error fetching puzzle: " + err.message);
+  } finally {
+    setLoading(false);
   }
 }
+
+function setLoading(isLoading) {
+  const btn = document.getElementById("generateBtn");
+  if (isLoading) {
+    btn.disabled = true;
+    btn.classList.add("loading");
+    btn.setAttribute("aria-busy", "true");
+  } else {
+    btn.disabled = false;
+    btn.classList.remove("loading");
+    btn.removeAttribute("aria-busy");
+  }
+}
+
 
 /**
  * Splits backend text into puzzle and solution sections,
