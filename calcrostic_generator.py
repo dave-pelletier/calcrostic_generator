@@ -21,12 +21,12 @@ _OP_WEIGHTS = None  # or dict like {"+":1, "-":1, "x":1, "/":1}
 # =========================
 def pick_op(op_weights: dict) -> str:
     if not op_weights:
-        return random.choice(OPS)
+        return random.choice(_OPS)
     bag = []
-    for op in OPS:
+    for op in _OPS:
         w = int(op_weights.get(op, 0))
         bag.extend([op] * max(0, w))
-    return random.choice(bag) if bag else random.choice(OPS)
+    return random.choice(bag) if bag else random.choice(_OPS)
 
 def is_valid_value(v: int, allow_two_digit: bool, allow_zero: bool) -> bool:
     """Kid-friendly ranges only: non-negative and bounded."""
@@ -79,9 +79,9 @@ def _has_trivial_zero_identities(grid, row_ops, col_ops) -> bool:
 # Grid generation (rows + columns)
 # =========================
 def generate_grid(
-    allow_two_digit: bool = ALLOW_TWO_DIGIT,
-    allow_zero: bool = ALLOW_ZERO,
-    op_weights: dict = OP_WEIGHTS,
+    allow_two_digit: bool = _ALLOW_TWO_DIGIT,
+    allow_zero: bool = _ALLOW_ZERO,
+    op_weights: dict = _OP_WEIGHTS,
     max_trials: int = 50000,
 ) -> Tuple[Optional[List[List[int]]], Optional[List[str]], Optional[List[str]]]:
     """Generate a consistent 3x3 numeric grid that satisfies all row & column equations."""
@@ -439,7 +439,7 @@ def generate_puzzle(
     max_attempts: int = 20000
 ):
     for _ in range(max_attempts):
-        grid, row_ops, col_ops = generate_grid(allow_two_digit, allow_zero, max_trials=2000)
+        grid, row_ops, col_ops = generate_grid(allow_two_digit, allow_zero, op_weights, max_trials=2000)
         if not grid:
             continue
 

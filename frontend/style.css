@@ -101,20 +101,54 @@ h2, h3 {
 /* ---- Cards / Panels ---- */
 .output {
   margin: 1.25rem auto 0;
-  font-size: 1.8rem;
-  line-height: 2.2rem;
   text-align: center;
-  font-weight: 700;
-  letter-spacing: 1px;
   max-width: 760px;
   background: var(--card);
   padding: 1.2rem;
   border-radius: 14px;
   border: 1px solid var(--card-border);
+  overflow: hidden;
   box-shadow:
     0 1px 0 rgba(0,0,0,0.02),
     0 6px 10px rgba(0,0,0,0.04);
 }
+
+/* Puzzle section */
+#puzzle {
+  font-size: 2rem;       /* big for visibility */
+  line-height: 2.4rem;
+  text-align: center;
+  font-weight: 700;
+  padding: 1.2rem;
+  background: var(--pre-bg);
+  border: 2px solid var(--accent);
+  border-radius: 12px;
+}
+
+/* Solution section */
+#solution {
+  font-size: 1.6rem;
+  line-height: 2rem;
+  text-align: center;
+  font-weight: 600;
+  padding: 1rem;
+  background: var(--pre-bg);
+  border: 2px solid var(--good);
+  border-radius: 12px;
+}
+
+/* Mapping section */
+#mapping {
+  font-size: 1.6rem;
+  line-height: 2rem;
+  text-align: center;
+  font-weight: 600;
+  padding: 1rem;
+  background: var(--pre-bg);
+  border: 2px solid var(--good);
+  border-radius: 12px;
+}
+
 
 .hidden { display: none; }
 
@@ -160,7 +194,7 @@ h2, h3 {
   align-items: center;
   justify-content: space-between;  /* label left, control right */
   gap: 12px;
-  width: 100%;
+  width: 95%;
   padding: 10px 12px;
   background: var(--row-bg);
   border: 1px solid var(--card-border);
@@ -298,4 +332,10 @@ a:hover { color: var(--accent-hover); text-decoration: underline; }
 details {
   border-top: 1px solid var(--card-border);
   padding-top: 6px;
+}
+
+/* Remove the line above Configuration */
+#configPanel details {
+  border-top: none;
+  padding-top: 0;
 }
