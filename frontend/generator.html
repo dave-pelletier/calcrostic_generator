@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="light dark">
+  <title>Calcrostics</title>
+  <link rel="stylesheet" href="style.css?v=2" />
+</head>
+<body>
+  <h1>Calcrostic<sup>©</sup> Puzzle Generator</h1>
+  <h2>Adam Beck Mathletes</h2>
+
+  <section id="configPanel" class="output">
+    <details>
+      <summary>⚙️ Configuration</summary>
+
+      <div class="config-list">
+        <label class="config-item">
+          <span class="config-label">Allow Zero</span>
+          <input type="checkbox" id="allowZero" checked>
+        </label>
+
+        <label class="config-item">
+          <span class="config-label">Allow Two-Digit Numbers</span>
+          <input type="checkbox" id="allowTwoDigit" checked>
+        </label>
+
+        <label class="config-item">
+          <span class="config-label">Letters Min</span>
+          <input type="number" id="lettersMin" value="5" min="1" max="10" class="config-number">
+        </label>
+
+        <label class="config-item">
+          <span class="config-label">Letters Max</span>
+          <input type="number" id="lettersMax" value="6" min="1" max="10" class="config-number">
+        </label>
+
+        <!-- Operator Weights (0–4) -->
+        <label class="config-item">
+          <span class="config-label">Weight: +</span>
+          <input type="range" id="wPlus" min="0" max="4" value="2" step="1">
+        </label>
+
+        <label class="config-item">
+          <span class="config-label">Weight: −</span>
+          <input type="range" id="wMinus" min="0" max="4" value="2" step="1">
+        </label>
+
+        <label class="config-item">
+          <span class="config-label">Weight: ×</span>
+          <input type="range" id="wTimes" min="0" max="4" value="2" step="1">
+        </label>
+
+        <label class="config-item">
+          <span class="config-label">Weight: ÷</span>
+          <input type="range" id="wDiv" min="0" max="4" value="2" step="1">
+        </label>
+      </div>
+
+    </details>
+  </section>
+
+  <button id="generateBtn">
+    <span class="spinner" aria-hidden="true"></span>
+    <span class="btn-label">Generate Puzzle!</span>
+  </button>
+
+  <section id="output" class="output hidden">
+    <h2>🧩 Puzzle</h2>
+    <pre id="puzzle"></pre>
+
+    <details>
+      <summary>✅ Solution</summary>
+      <pre id="solution"></pre>
+      <pre id="mapping"></pre>
+    </details>
+
+    <!--
+    <details>
+      <summary>🔍 Debug</summary>
+      <pre id="debug"></pre>
+    </details>
+    -->
+  </section>
+
+  <br>
+  <section id="credit">
+    <p>Calcrostic<sup>©</sup> Puzzles were created by the <a href="https://cariboutests.com/">Caribou Contests</a> team. You can learn more on their <a href="https://cariboutests.com/games/calcrostic.php">Interactive Calcrostic<sup>©</sup> Puzzle page</a>.</p>
+  </section>
+
+  <script src="script.js"></script>
+</body>
+</html>

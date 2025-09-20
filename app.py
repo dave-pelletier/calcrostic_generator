@@ -52,11 +52,11 @@ def generate(
         traceback.print_exc()
         raise HTTPException(status_code=500, detail=f"Internal error: {e}")
 
-# SAFE static mount (won’t crash if folder missing)
-static_dir = Path(__file__).parent / "frontend"
-if static_dir.exists():
-    app.mount("/", StaticFiles(directory=str(static_dir), html=True), name="static")
-else:
-    @app.get("/")
-    def root_placeholder():
-        return {"status": "ok", "hint": "frontend/ not found in image"}
+# Mount the same frontend folder twice, at "/" and at "/generator"
+frontend_dir = Path(__file__).parent / "frontend"
+
+# Serve homepage at /
+app.mount("/", StaticFiles(directory=frontend_dir, html=True), name="index")
+
+# Serve generator at /generator
+app.mount("/generator", StaticFiles(directory=frontend_dir, html=True), name="generator")
